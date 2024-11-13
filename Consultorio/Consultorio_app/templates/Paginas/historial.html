@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+    Registrar Historial Médico
+{% endblock %}
+
+{% block contenido %}
+    <div class="container mt-5">
+        <div class="p-4" style="background-color: #e0f1ff;">
+            <h2><strong>REGISTRAR HISTORIAL MÉDICO</strong></h2>
+            <form method="post" action="{% url 'registrar_historial' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="antecedentes" class="form-label"><strong>ANTECEDENTES</strong></label>
+                            <textarea class="form-control" id="antecedentes" name="antecedentes" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="diagnosticos" class="form-label"><strong>DIAGNOSTICOS</strong></label>
+                            <select multiple class="form-control" id="diagnosticos" name="diagnosticos" required>
+                                {% for diagnostico in diagnosticos %}
+                                    <option value="{{ diagnostico.id }}">{{ diagnostico.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="tratamientos" class="form-label"><strong>TRATAMIENTOS</strong></label>
+                            <select multiple class="form-control" id="tratamientos" name="tratamientos" required>
+                                {% for tratamiento in tratamientos %}
+                                    <option value="{{ tratamiento.id }}">{{ tratamiento.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="alergias" class="form-label"><strong>ALERGIAS</strong></label>
+                            <input type="text" class="form-control" id="alergias" name="alergias" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="notas" class="form-label"><strong>NOTAS</strong></label>
+                    <textarea class="form-control" id="notas" name="notas" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">REGISTRAR</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

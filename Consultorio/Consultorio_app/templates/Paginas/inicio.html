@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %} INICIO {% endblock %}
+
+{% block contenido %}
+
+<style>
+    body {
+        background-image: url("{% static 'Images/dc1.png' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .footer-bar {
+        background-color: #87CEEB;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    .greeting {
+        text-align: center;
+        margin-top: 40px; /* Espacio en la parte superior */
+        font-size: 45px; /* Aumenta el tamaño del texto */
+        font-weight: bold; /* Negrita */
+        color: #87CEEB; /* Color del texto */
+        text-shadow: 
+            -2px -2px 0 #FFF,  
+            2px -2px 0 #FFF,
+            -2px 2px 0 #FFF,
+            2px 2px 0 #FFF; /* Borde blanco alrededor de cada letra */
+    }
+
+    .sub-greeting {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="greeting">
+    BIENVENIDO AL SISTEMA<br>
+</div>
+
+<div class="sub-greeting">
+    {{ greeting }}
+</div>
+
+<div class="footer-bar">
+    CONSULTAS DE LUNES A VIERNES DE 10 A.M A 18 P.M Y FINES DE SEMANA DE 8 A.M A 11 A.M Y DE 14 P.M A 17 P.M
+</div>
+
+{% endblock %}

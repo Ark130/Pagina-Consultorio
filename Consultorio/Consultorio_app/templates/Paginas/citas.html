@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %} CITAS {% endblock %}
+
+{% block contenido %}
+
+<div class="container mt-5" id="main-content" style="background-color: #e0f1ff; border-radius: 30px; max-width: 700px;">
+    <h2 class="text-center" style="padding-top:20px"><strong>CITAS</strong></h2>
+    <div class="container" style="max-width: 600px;"> <!-- Contenedor adicional -->
+        <form method="post" action="{% url 'guardar_cita' %}" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="fecha_hora" class="form-label"><strong>FECHA Y HORA</strong></label>
+                <input type="datetime-local" class="form-control" id="fecha_hora" name="fecha_hora" required>
+            </div>
+            <div class="mb-3">
+                <label for="medico" class="form-label"><strong>MÉDICO</strong></label>
+                <select class="form-control" id="medico" name="medico" required>
+                    {% for medico in medicos %}
+                    <option value="{{ medico.id }}">{{ medico.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="paciente" class="form-label"><strong>PACIENTE</strong></label>
+                <select class="form-control" id="paciente" name="paciente" required>
+                    {% for paciente in pacientes %}
+                    <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div class="text-center">
+            <button type="submit" class="btn btn-primary"><strong>GUARDAR</strong></button>
+        </form>
+    </div> <!-- Fin del contenedor adicional -->
+</div>
+
+<script>
+function validateForm() {
+    var fechaHora = document.getElementById("fecha_hora").value;
+    var medico = document.getElementById("medico").value;
+    var paciente = document.getElementById("paciente").value;
+
+    if (!fechaHora || !medico || !paciente) {
+        alert("Por favor, complete todos los campos.");
+        return false;
+    }
+    return true;
+}
+
+function validateModifyForm() {
+    var fechaHora = document.getElementById("modify_fecha_hora").value;
+    var medico = document.getElementById("modify_medico").value;
+    var paciente = document.getElementById("modify_paciente").value;
+
+    if (!fechaHora || !medico || !paciente) {
+        alert("Por favor, complete todos los campos.");
+        return false;
+    }
+    return true;
+}
+
+function showDeleteForm() {
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("deleteSection").style.display = "block";
+    document.getElementById("modifySection").style.display = "none";
+}
+</script>
+
+{% endblock %}

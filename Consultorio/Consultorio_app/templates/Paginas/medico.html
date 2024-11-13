@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Registro de Médico{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5" style="background-color: #e0f1ff; padding: 20px; border-radius: 30px; max-width: 800px;">
+    <div class="container" style="max-width: 600px;">
+        <h2 class="text-center mb-4"><strong>RECETAS MÉDICO</strong></h2>
+        <form method="post" action="{% url 'registrar_medico' %}" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3" style="padding-right: 30px;">
+                    <label for="nombre" class="form-label" style="font-weight: bold; text-transform: uppercase;">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s\-]+$" title="El nombre solo puede contener letras, guiones y acentos." onkeypress="return soloLetras(event)">
+                </div>
+                <div class="col-md-6 mb-3" style="padding-left: 30px;">
+                    <label for="especialidad" class="form-label" style="font-weight: bold; text-transform: uppercase;">Especialidad:</label>
+                    <input type="text" class="form-control" id="especialidad" name="especialidad" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" title="La especialidad solo puede contener letras y acentos." onkeypress="return soloLetras(event)">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3" style="padding-right: 30px;">
+                    <label for="consulta" class="form-label" style="font-weight: bold; text-transform: uppercase;">Consulta:</label>
+                    <select class="form-control" id="consulta" name="consulta" required>
+                        {% for cita in citas %}
+                        <option value="{{ cita.id }}">{{ cita.detalle }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3" style="padding-left: 30px;">
+                    <label for="receta" class="form-label" style="font-weight: bold; text-transform: uppercase;">Receta:</label>
+                    <textarea class="form-control" id="receta" name="receta" rows="4" required></textarea>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-success"><strong>REGISTRAR</strong></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function soloLetras(event) {
+    var charCode = event.charCode;
+    if ((charCode >= 65 && charCode <= 90) || // Letras mayúsculas
+        (charCode >= 97 && charCode <= 122) || // Letras minúsculas
+        (charCode >= 192 && charCode <= 255) || // Letras con acentos
+        charCode === 32 || // Espacio
+        charCode === 45) { // Guion
+        return true;
+    }
+    return false;
+}
+
+function validateForm() {
+    var nombre = document.getElementById("nombre").value;
+    var especialidad = document.getElementById("especialidad").value;
+    var consulta = document.getElementById("consulta").value;
+    var receta = document.getElementById("receta").value;
+
+    var nombrePattern = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s\-]+$/;
+    var especialidadPattern = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
+    if (!nombre.match(nombrePattern)) {
+        alert("El nombre solo puede contener letras, guiones y acentos.");
+        return false;
+    }
+
+    if (!especialidad.match(especialidadPattern)) {
+        alert("La especialidad solo puede contener letras y acentos.");
+        return false;
+    }
+
+    if (!nombre || !especialidad || !consulta || !receta) {
+        alert("Por favor, complete todos los campos.");
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}

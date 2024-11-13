@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Lista de Pacientes{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5 position-relative" style="background-color: #e0f1ff; padding: 20px; border-radius: 30px; max-width: 1000px; height: 600px;">
+    <div class="container" style="max-width: 900px;">
+        <h2 class="text-center mb-4"><strong>LISTA DE PACIENTES</strong></h2>
+        <div id="dataGridView" style="overflow-y: auto; max-height: 300px; background-color: white; border-radius: 10px;">
+            <form id="deleteForm" method="post" action="{% url 'eliminar_paciente' %}">
+                {% csrf_token %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="custom-header top-left" style="background-color: black; color: white">NOMBRE</th>
+                            <th class="custom-header" style="background-color: black; color: white">EDAD</th>
+                            <th class="custom-header" style="background-color: black; color: white">FECHA DE NACIMIENTO</th>
+                            <th class="custom-header" style="background-color: black; color: white">HISTORIAL MÉDICO</th>
+                            <th class="custom-header" style="background-color: black; color: white">CONTACTO DE EMERGENCIA</th>
+                            <th class="custom-header top-right" style="background-color: black; color: white; border-top-right-radius: 10px;">SELECCIONAR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente.nombre }}</td>
+                            <td>{{ paciente.edad }}</td>
+                            <td>{{ paciente.fecha_nacimiento }}</td>
+                            <td>{{ paciente.historial_medico }}</td>
+                            <td>{{ paciente.contacto_emergencia }}</td>
+                            <td><input type="radio" name="selectedPaciente" value="{{ paciente.id }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div id="updateForm" style="display: none;">
+            <form id="updatePacienteForm" method="post" action="{% url 'actualizar_paciente' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3" style="padding-right: 30px;">
+                        <label for="nombre" class="form-label" style="font-weight: bold; text-transform: uppercase;">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" title="El nombre solo puede contener letras y acentos." onkeypress="return soloLetras(event)">
+                    </div>
+                    <div class="col-md-6 mb-3" style="padding-left: 30px;">
+                        <label for="edad" class="form-label" style="font-weight: bold; text-transform: uppercase;">Edad:</label>
+                        <input type="number" class="form-control" id="edad" name="edad" required min="1">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="fecha_nacimiento" class="form-label" style="font-weight: bold; text-transform: uppercase;">Fecha de Nacimiento:</label>
+                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="historial_medico" class="form-label" style="font-weight: bold; text-transform: uppercase;">Historial Médico:</label>
+                    <textarea class="form-control" id="historial_medico" name="historial_medico" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="contacto_emergencia" class="form-label" style="font-weight: bold; text-transform: uppercase;">Contacto de Emergencia:</label>
+                    <input type="tel" class="form-control" id="contacto_emergencia" name="contacto_emergencia" required pattern="^[0-9]+$" title="El contacto de emergencia solo debe contener números.">
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-success"><strong>REALIZAR ACTUALIZACIÓN</strong></button>
+                </div>
+                <input type="hidden" id="pacienteId" name="pacienteId">
+            </form>
+        </div>
+    </div>
+    <div class="position-absolute" style="bottom: 20px; right: 20px;">
+        <button type="button" class="btn btn-danger mr-2" onclick="eliminarPaciente()">ELIMINAR</button>
+        <button type="button" class="btn btn-primary" onclick="mostrarFormularioActualizacion()">ACTUALIZAR</button>
+    </div>
+</div>
+
+<style>
+    .custom-header {
+        background-color: black;
+        color: white;
+        text-align: center;
+    }
+    .top-left {
+        border-top-left-radius: 10px;
+    }
+    .top-right {
+        border-top-right-radius: 10px;
+    }
+</style>
+
+<script>
+function eliminarPaciente() {
+    var selectedPaciente = document.querySelector('input[name="selectedPaciente"]:checked');
+    if (selectedPaciente) {
+        document.getElementById('deleteForm').submit();
+    } else {
+        alert("Por favor, seleccione un paciente para eliminar.");
+    }
+}
+
+function mostrarFormularioActualizacion() {
+    var selectedPaciente = document.querySelector('input[name="selectedPaciente"]:checked');
+    if (selectedPaciente) {
+        var pacienteId = selectedPaciente.value;
+        document.getElementById('pacienteId').value = pacienteId;
+
+        // Aquí puedes agregar lógica para llenar el formulario con los datos del paciente seleccionado si es necesario
+
+        document.getElementById('dataGridView').style.display = 'none';
+        document.getElementById('updateForm').style.display = 'block';
+    } else {
+        alert("Por favor, seleccione un paciente para actualizar.");
+    }
+}
+
+function soloLetras(event) {
+    var charCode = event.charCode;
+    if ((charCode >= 65 && charCode <= 90) || // Letras mayúsculas
+        (charCode >= 97 && charCode <= 122) || // Letras minúsculas
+        (charCode >= 192 && charCode <= 255) || // Letras con acentos
+        charCode === 32) { // Espacio
+        return true;
+    }
+    return false;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Lista de Citas{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5 position-relative" style="background-color: #e0f1ff; padding: 20px; border-radius: 30px; max-width: 1000px; height: 600px;">
+    <div class="container" style="max-width: 800px;">
+        <h2 class="text-center mb-4"><strong>LISTA DE CITAS</strong></h2>
+        <div id="dataGridView" style="overflow-y: auto; max-height: 300px; background-color: white; border-radius: 10px;">
+            <form id="deleteForm" method="post" action="{% url 'eliminar_cita' %}">
+                {% csrf_token %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="custom-header top-left" style="background-color: black; color: white">FECHA Y HORA</th>
+                            <th class="custom-header" style="background-color: black; color: white">MÉDICO</th>
+                            <th class="custom-header" style="background-color: black; color: white">PACIENTE</th>
+                            <th class="custom-header top-right" style="background-color: black; color: white; border-top-right-radius: 10px;">SELECCIONAR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td>{{ cita.fecha_hora }}</td>
+                            <td>{{ cita.medico.nombre }}</td>
+                            <td>{{ cita.paciente.nombre }}</td>
+                            <td><input type="radio" name="selectedCita" value="{{ cita.id }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div id="updateForm" style="display: none;">
+            <form id="updateCitaForm" method="post" action="{% url 'modificar_cita' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="modify_fecha_hora" class="form-label"><strong>Fecha y Hora</strong></label>
+                    <input type="datetime-local" class="form-control" id="modify_fecha_hora" name="fecha_hora" required>
+                </div>
+                <div class="mb-3">
+                    <label for="modify_medico" class="form-label"><strong>Médico</strong></label>
+                    <select class="form-control" id="modify_medico" name="medico" required>
+                        {% for medico in medicos %}
+                        <option value="{{ medico.id }}">{{ medico.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="modify_paciente" class="form-label"><strong>Paciente</strong></label>
+                    <select class="form-control" id="modify_paciente" name="paciente" required>
+                        {% for paciente in pacientes %}
+                        <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-success"><strong>REALIZAR ACTUALIZACIÓN</strong></button>
+                </div>
+                <input type="hidden" id="citaId" name="cita_id">
+            </form>
+        </div>
+    </div>
+    <div class="position-absolute" style="bottom: 20px; right: 20px;">
+        <button type="button" class="btn btn-danger mr-2" onclick="eliminarCita()">ELIMINAR</button>
+        <button type="button" class="btn btn-primary" onclick="mostrarFormularioActualizacion()">ACTUALIZAR</button>
+    </div>
+</div>
+
+<style>
+    .custom-header {
+        background-color: black;
+        color: white;
+        text-align: center;
+    }
+    .top-left {
+        border-top-left-radius: 10px;
+    }
+    .top-right {
+        border-top-right-radius: 10px;
+    }
+</style>
+
+<script>
+function eliminarCita() {
+    var selectedCita = document.querySelector('input[name="selectedCita"]:checked');
+    if (selectedCita) {
+        document.getElementById('deleteForm').submit();
+    } else {
+        alert("Por favor, seleccione una cita para eliminar.");
+    }
+}
+
+function mostrarFormularioActualizacion() {
+    var selectedCita = document.querySelector('input[name="selectedCita"]:checked');
+    if (selectedCita) {
+        var citaId = selectedCita.value;
+        document.getElementById('citaId').value = citaId;
+
+        // Aquí puedes agregar lógica para llenar el formulario con los datos de la cita seleccionada si es necesario
+
+        document.getElementById('dataGridView').style.display = 'none';
+        document.getElementById('updateForm').style.display = 'block';
+    } else {
+        alert("Por favor, seleccione una cita para actualizar.");
+    }
+}
+</script>
+{% endblock %}

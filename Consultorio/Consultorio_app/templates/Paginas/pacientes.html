@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %} PACIENTES {% endblock %}
+
+{% block contenido %}
+
+<div class="container mt-5" id="main-content" style="background-color: #e0f1ff; border-radius: 30px; max-width: 700px;">
+    <h2 class="text-center" style="padding-top:20px"><strong>PACIENTES</strong></h2>
+    <div class="container" style="max-width: 600px;"> <!-- Contenedor adicional -->
+        <form method="post" action="{% url 'guardar_paciente' %}" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="nombre" class="form-label"><strong>NOMBRE DEL PACIENTE</strong></label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required oninput="filterNameInput(this)">
+            </div>
+            <div class="mb-3">
+                <label for="edad" class="form-label"><strong>EDAD</strong></label>
+                <input type="number" class="form-control" id="edad" name="edad" required min="1">
+            </div>
+            <div class="mb-3">
+                <label for="fecha_nacimiento" class="form-label"><strong>FECHA DE NACIMIENTO</strong></label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+            </div>
+            <div class="mb-3">
+                <label for="historial_medico" class="form-label"><strong>HISTORIAL MÉDICO</strong></label>
+                <textarea class="form-control" id="historial_medico" name="historial_medico" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="contacto_emergencia" class="form-label"><strong>CONTACTO DE EMERGENCIA</strong></label>
+                <input type="tel" class="form-control" id="contacto_emergencia" name="contacto_emergencia" required oninput="filterNumberInput(this)">
+            </div>
+            <button type="submit" class="btn btn-primary"><strong>GUARDAR</strong></button>
+        </form>
+    </div> <!-- Fin del contenedor adicional -->
+</div>
+
+<script>
+function validateForm() {
+    var edad = document.getElementById("edad").value;
+    if (edad <= 0) {
+        alert("La edad debe ser mayor a cero.");
+        return false;
+    }
+    var contactoEmergencia = document.getElementById("contacto_emergencia").value;
+    if (!/^[0-9]+$/.test(contactoEmergencia)) {
+        alert("El contacto de emergencia solo debe contener números.");
+        return false;
+    }
+    return true;
+}
+
+function filterNameInput(input) {
+    input.value = input.value.replace(/[^A-Za-zÀ-ÿáéíóúÁÉÍÓÚüÜñÑ\s]/g, '');
+}
+
+function filterNumberInput(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+}
+</script>
+
+{% endblock %}
